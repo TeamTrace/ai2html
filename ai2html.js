@@ -50,13 +50,18 @@ var scriptVersion = "0.83.0";
 // ai2html and config settings
 // ================================================
 
+var currentMonth = new Date().getMonth() + 1
+if (currentMonth < 10) currentMonth = "0" + currentMonth
+
+var imageSuffix = Date.now()
+
 // These are base settings that are overridden by text block settings in
 // the .ai document and settings containing in ai2html-config.json files
 var defaultSettings = {
   "settings_version": scriptVersion,
   "create_promo_image": false,
   "promo_image_width": 1024,
-  "image_format": ["auto"],  // Options: auto, png, png24, jpg, svg
+  "image_format": ["jpg"],  // Options: auto, png, png24, jpg, svg
   "write_image_files": true,
   "responsiveness": "fixed", // Options: fixed, dynamic
   "max_width": "",
@@ -66,7 +71,7 @@ var defaultSettings = {
   "html_output_path": "/ai2html-output/",
   "html_output_extension": ".html",
   "image_output_path": "",
-  "image_source_path": null,
+  "image_source_path": "http://thetrace.org/wp-content/uploads/2019/" + currentMonth + "/",
   "image_alt_text": "",
   "cache_bust_token": null,  // Append a token to the url of image urls: ?v=<cache_bust_token>
   "create_config_file": false,
@@ -77,8 +82,8 @@ var defaultSettings = {
   "jpg_quality": 60,
   "center_html_output": true,
   "use_2x_images_if_possible": true,
-  "use_lazy_loader": false,
-  "include_resizer_classes": false,
+  "use_lazy_loader": true,
+  "include_resizer_classes": true,
   "include_resizer_widths": true,
   "include_resizer_script": false,
   "inline_svg": false, // Embed background image SVG in HTML instead of loading a file
@@ -90,6 +95,7 @@ var defaultSettings = {
   "show_completion_dialog_box": true,
   "clickable_link": "",  // Add a URL to make the entire graphic a clickable link
   "last_updated_text": "",
+  "image_suffix": imageSuffix,
   "headline": "",
   "leadin": "",
   "summary": "",
@@ -141,7 +147,12 @@ var defaultSettings = {
     {"aifont":"Georgia","family":"georgia,'times new roman',times,serif","weight":"","style":""},
     {"aifont":"Georgia-Bold","family":"georgia,'times new roman',times,serif","weight":"bold","style":""},
     {"aifont":"Georgia-Italic","family":"georgia,'times new roman',times,serif","weight":"","style":"italic"},
-    {"aifont":"Georgia-BoldItalic","family":"georgia,'times new roman',times,serif","weight":"bold","style":"italic"}
+    {"aifont":"Georgia-BoldItalic","family":"georgia,'times new roman',times,serif","weight":"bold","style":"italic"},
+    {"aifont": "AktivGrotesk-Regular","family":"aktiv-grotesk,sans-serif","weight":"","style":""},
+    {"aifont": "AktivGrotesk-Italic","family":"aktiv-grotesk,sans-serif","weight":"","style":"italic"},
+    {"aifont": "AktivGrotesk-Bold","family":"aktiv-grotesk,sans-serif","weight":"bold","style":""},
+    {"aifont": "AktivGrotesk-BoldItalic","family":"aktiv-grotesk,sans-serif","weight":"bold","style":"italic"},
+    {"aifont": "AktivGrotesk-XBold","family":"aktiv-grotesk,sans-serif","weight":"800","style":""}
   ]
 };
 
@@ -1684,6 +1695,9 @@ function getArtboardFullName(ab, settings) {
   var suffix = '';
   if (settings.grouped_artboards) {
     suffix = "-" + Math.round(convertAiBounds(ab.artboardRect).width);
+  }
+  if (settings.image_suffix) {
+    suffix += ("-" + settings.image_suffix);
   }
   return getDocumentArtboardName(ab) + suffix;
 }
